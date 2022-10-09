@@ -1,9 +1,9 @@
-import { ListPostsQuery, Post } from '../src/API'
+import { ListPostsQuery, Post } from '../API'
 import {useEffect, useState} from 'react'
 
 import { API } from 'aws-amplify'
 import type { NextPage } from 'next'
-import { listPosts } from '../src/graphql/queries'
+import { listPosts } from '../graphql/queries'
 
 const Home: NextPage = () => {
   const [posts, setPosts] = useState<Array<Post | null>>([])

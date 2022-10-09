@@ -1,8 +1,8 @@
 import '../styles/globals.css'
-import '../configureAmplify'
+import '../../configureAmplify'
 
 import type { AppProps } from 'next/app'
-import { Navbar } from '../src/components/Navbar'
+import { Navbar } from '../components/Navbar'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
