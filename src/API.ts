@@ -241,6 +241,10 @@ export type PostsByUsernameQuery = {
   } | null,
 };
 
+export type OnCreatePostSubscriptionVariables = {
+  username?: string | null,
+};
+
 export type OnCreatePostSubscription = {
   onCreatePost?:  {
     __typename: "Post",
@@ -254,6 +258,10 @@ export type OnCreatePostSubscription = {
   } | null,
 };
 
+export type OnUpdatePostSubscriptionVariables = {
+  username?: string | null,
+};
+
 export type OnUpdatePostSubscription = {
   onUpdatePost?:  {
     __typename: "Post",
@@ -265,6 +273,10 @@ export type OnUpdatePostSubscription = {
     createdAt: string,
     updatedAt: string,
   } | null,
+};
+
+export type OnDeletePostSubscriptionVariables = {
+  username?: string | null,
 };
 
 export type OnDeletePostSubscription = {
