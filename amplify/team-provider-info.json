@@ -13,7 +13,8 @@
     },
     "categories": {
       "auth": {
-        "blogapp2a586002": {}
+        "blogapp2a586002": {},
+        "true": {}
       }
     }
   }
