@@ -1,7 +1,8 @@
+import { API, Storage } from 'aws-amplify'
 import { ListPostsQuery, Post } from 'API'
 import { useEffect, useState } from 'react'
 
-import { API } from 'aws-amplify'
+import Image from 'next/image'
 import Link from 'next/link'
 import { listPosts } from 'graphql/queries'
 
@@ -14,8 +15,18 @@ const Main = () => {
         query: listPosts
       })) as { data: ListPostsQuery }
 
-      if (postData.data.listPosts?.items) {
-        setPosts(postData.data.listPosts.items)
+      const items = postData.data.listPosts?.items
+
+      if (items) {
+        const postWithImages = await Promise.all(
+          items.map(async (post) => {
+            if (post?.coverImage) {
+              post.coverImage = await Storage.get(post?.coverImage)
+            }
+            return post
+          })
+        )
+        setPosts(postWithImages)
       }
     }
 
@@ -30,9 +41,20 @@ const Main = () => {
 
       {posts.map((post) => (
         <Link key={post?.id} href={`/posts/${post?.id}`}>
-          <div className="cursor-pointer border-b border-gray-300 mt-8 pb-4">
-            <h2 className="text-xl font-semibold">{post?.title}</h2>
-            <p className="text-gray-500 mt-2">Autor: {post?.username}</p>
+          <div className="my-6 pb-6 border-b border-gray-300">
+            {post?.coverImage && (
+              <Image
+                src={post.coverImage}
+                alt="visualização da imagem"
+                className="bg-contain bg-center rounded-full sm:mx-0 sm:shrink-0"
+                width="144"
+                height="144"
+              />
+            )}
+            <div className="cursor-pointer border-b border-gray-300 mt-8 pb-4">
+              <h2 className="text-xl font-semibold">{post?.title}</h2>
+              <p className="text-gray-500 mt-2">Autor: {post?.username}</p>
+            </div>
           </div>
         </Link>
       ))}
