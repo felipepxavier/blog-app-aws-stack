@@ -1,7 +1,8 @@
-import { API, Auth } from 'aws-amplify'
+import { API, Auth, Storage } from 'aws-amplify'
 import { Post, PostsByUsernameQuery } from 'API'
 import { useEffect, useState } from 'react'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { deletePost } from 'graphql/mutations'
 import moment from 'moment'
@@ -18,7 +19,19 @@ const Main = () => {
       variables: { username }
     })) as { data: PostsByUsernameQuery }
 
-    setPosts(postData.data.postsByUsername?.items)
+    const items = postData.data.postsByUsername?.items
+    if (items) {
+      const postWithImages = await Promise.all(
+        items.map(async (post) => {
+          if (post?.coverImage) {
+            post.coverImage = await Storage.get(post?.coverImage)
+          }
+          return post
+        })
+      )
+
+      setPosts(postWithImages)
+    }
   }
 
   useEffect(() => {
@@ -43,6 +56,15 @@ const Main = () => {
           className="py-8 px-8 max-w-xxl mx-auto bg-white rounded-xl shadow-lg space-y-2 sm:py-1 sm:flex 
         sm:items-center sm:space-y-0 sm:space-x-6 mb-2"
         >
+          {post?.coverImage && (
+            <Image
+              src={post.coverImage}
+              alt="visualização da imagem"
+              className="bg-contain bg-center rounded-full sm:mx-0 sm:shrink-0"
+              width="144"
+              height="144"
+            />
+          )}
           <div className="text-center space-y-2 sm:text-left">
             <div className="space-y-0.5">
               <p className="text-lg text-black font-semibold">{post?.title}</p>
