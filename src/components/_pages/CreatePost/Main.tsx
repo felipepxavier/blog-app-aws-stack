@@ -61,8 +61,7 @@ const Main = () => {
   }
 
   const handleChangeImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileUploaded =
-      Array.isArray(event?.target?.files) && event?.target?.files[0]
+    const fileUploaded = event?.target?.files![0]
     if (!fileUploaded) return
     setImage(fileUploaded)
   }

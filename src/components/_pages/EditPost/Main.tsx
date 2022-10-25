@@ -1,13 +1,15 @@
 import 'easymde/dist/easymde.min.css'
 
-import { ChangeEvent, useEffect, useState } from 'react'
+import { API, Storage } from 'aws-amplify'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { GetPostQuery, Post } from 'API'
 
-import { API } from 'aws-amplify'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { getPost } from 'graphql/queries'
 import { updatePost } from 'graphql/mutations'
 import { useRouter } from 'next/router'
+import { v4 as uuid } from 'uuid'
 
 const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
   ssr: false
@@ -16,10 +18,18 @@ const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
 
 function Main() {
   const [post, setPost] = useState<Post | undefined | null>(undefined)
+  const [coverImage, setCoverImage] = useState<File | string | null>(null)
+  const [localImage, setLocalImage] = useState<string | null>(null)
+  const imagefileInput = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const { id } = router.query
 
   useEffect(() => {
+    async function updateCoverImage(coverImage: string) {
+      const imageKey = await Storage.get(coverImage)
+      setCoverImage(imageKey)
+    }
+
     async function fetchPost() {
       if (!id) return
       const postData = (await API.graphql({
@@ -27,11 +37,27 @@ function Main() {
         variables: { id }
       })) as { data: GetPostQuery }
       setPost(postData.data.getPost)
+
+      if (postData.data.getPost?.coverImage) {
+        updateCoverImage(postData.data.getPost.coverImage)
+      }
     }
     fetchPost()
   }, [id])
 
   if (!post) return null
+
+  const uploadImage = async () => {
+    imagefileInput.current?.click()
+  }
+
+  function handleChangeImage(event: ChangeEvent<HTMLInputElement>) {
+    const fileUploaded = event?.target?.files![0]
+    if (!fileUploaded) return
+
+    setCoverImage(fileUploaded)
+    setLocalImage(URL.createObjectURL(fileUploaded))
+  }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const propName = event.target.name
@@ -46,10 +72,17 @@ function Main() {
   async function updateCurrentPost() {
     const { title, content } = post!
     if (!title || !content) return
-    const postUpdated = {
+    const postUpdated: { [key: string]: string | string[] | undefined } = {
       id,
       content,
       title
+    }
+
+    if (coverImage && localImage) {
+      const filename = `${(coverImage as File).name}_${uuid()}`
+      postUpdated.coverImage = filename
+
+      await Storage.put(filename, coverImage)
     }
 
     await API.graphql({
@@ -65,6 +98,16 @@ function Main() {
         Editar Postagem
       </h1>
 
+      {coverImage && (
+        <Image
+          src={localImage ? localImage : (coverImage as string)}
+          alt="visualização da imagem"
+          className="my-4"
+          width="500"
+          height="500"
+        />
+      )}
+
       <input
         onChange={handleChange}
         name="title"
@@ -76,6 +119,19 @@ function Main() {
         value={post.content!}
         onChange={(value) => setPost({ ...post, content: value })}
       />
+      <input
+        type="file"
+        ref={imagefileInput}
+        className="absolute w-0 h-0"
+        onChange={handleChangeImage}
+      />
+
+      <button
+        className="mr-4 bg-purple-600 text-white font-semibold px-8 py-2 rounded-lg"
+        onClick={uploadImage}
+      >
+        Upload de imagem
+      </button>
 
       <button
         className="mb-4 bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg"
