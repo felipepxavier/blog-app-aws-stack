@@ -5,10 +5,10 @@
 </div>
 
 <div>
-    <img src="./public/nextjs.png" style="max-width: 200px" />
-    <img src="./public/aws-amplify-logo.png" style="max-width: 200px" />
-    <img src="./public/aws-appsync.png" style="max-width: 200px" />
-    <img src="./public/graphql.png" style="max-width: 200px" />
+    <img src="./public/nextjs.png" style="max-width: 140px" />
+    <img src="./public/aws-amplify-logo.png" style="max-width: 140px" />
+    <img src="./public/aws-appsync.png" style="max-width: 140px" />
+    <img src="./public/graphql.png" style="max-width: 140px" />
 </div>
 ## 📚 **Sobre**
 
