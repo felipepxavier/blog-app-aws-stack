@@ -1,13 +1,39 @@
-import { API, Storage } from 'aws-amplify'
-import { ListPostsQuery, Post } from 'API'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { API, Storage, graphqlOperation } from 'aws-amplify'
+import { ListPostsQuery, NewOnCreatePostSubscription, Post } from 'API'
 import { useEffect, useState } from 'react'
 
+import { GraphQLSubscription } from '@aws-amplify/api'
 import Image from 'next/image'
 import Link from 'next/link'
 import { listPosts } from 'graphql/queries'
+import { newOnCreatePost } from 'graphql/subscriptions'
 
 const Main = () => {
   const [posts, setPosts] = useState<Array<Post | null>>([])
+
+  useEffect(() => {
+    let subOncreate: any
+
+    function setUpSubscriptions() {
+      subOncreate = API.graphql<
+        GraphQLSubscription<NewOnCreatePostSubscription>
+      >(graphqlOperation(newOnCreatePost)).subscribe({
+        next: (postData) => {
+          const newPost = postData.value.data?.newOnCreatePost
+          if (newPost) {
+            setPosts((oldState) => [newPost, ...oldState])
+          }
+        }
+      })
+    }
+
+    setUpSubscriptions()
+    return () => {
+      subOncreate.unsubscribe()
+    }
+  }, [])
 
   useEffect(() => {
     async function fetchPosts() {

@@ -407,15 +407,6 @@ export type ListPostsQuery = {
       coverImage?: string | null,
       comments?:  {
         __typename: "ModelCommentConnection",
-        items:  Array< {
-          __typename: "Comment",
-          id: string,
-          message?: string | null,
-          postID?: string | null,
-          createdAt: string,
-          updatedAt: string,
-          createdBy?: string | null,
-        } | null >,
         nextToken?: string | null,
       } | null,
       createdAt: string,
@@ -513,6 +504,32 @@ export type ListCommentsQuery = {
       createdBy?: string | null,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type NewOnCreatePostSubscription = {
+  newOnCreatePost?:  {
+    __typename: "Post",
+    id: string,
+    title: string,
+    content?: string | null,
+    username?: string | null,
+    coverImage?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      items:  Array< {
+        __typename: "Comment",
+        id: string,
+        message?: string | null,
+        postID?: string | null,
+        createdAt: string,
+        updatedAt: string,
+        createdBy?: string | null,
+      } | null >,
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
