@@ -407,6 +407,15 @@ export type ListPostsQuery = {
       coverImage?: string | null,
       comments?:  {
         __typename: "ModelCommentConnection",
+        items:  Array< {
+          __typename: "Comment",
+          id: string,
+          message?: string | null,
+          postID?: string | null,
+          createdAt: string,
+          updatedAt: string,
+          createdBy?: string | null,
+        } | null >,
         nextToken?: string | null,
       } | null,
       createdAt: string,

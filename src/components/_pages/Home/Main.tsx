@@ -36,7 +36,7 @@ const Main = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold text-sky-400 tracking-wide mt-6 mb-2">
-        Minhas Postagens
+        Postagens
       </h1>
 
       {posts.map((post) => (
@@ -54,6 +54,24 @@ const Main = () => {
             <div className="cursor-pointer border-b border-gray-300 mt-8 pb-4">
               <h2 className="text-xl font-semibold">{post?.title}</h2>
               <p className="text-gray-500 mt-2">Autor: {post?.username}</p>
+
+              {post?.comments &&
+                post.comments.items?.length > 0 &&
+                post.comments.items.map((comment) => (
+                  <div
+                    key={comment!.id}
+                    className="py-8 px-8 max-w-xl mx-auto bg-white rounded-xl 
+                  shadow-lg space-y-2 sm:py-1 sm:flex 
+                  my-6
+                  mx-12
+                  sm:items-center sm:space-y-0 sm:space-x-6 mb-2"
+                  >
+                    <div>
+                      <p className="text-gray-500 mt-2">{comment?.message}</p>
+                      <p className="text-gray-200 mt-1">{comment?.createdBy}</p>
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
         </Link>
