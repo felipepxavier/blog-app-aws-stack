@@ -1,8 +1,10 @@
-<div align="center">
-    <h3>
-        blog-app-aws-stack
-    </h3>
-</div>
+<div align=center>
+
+<h3>
+
+    blog-app-aws-stack
+
+</h3>
 
 <div>
     <img src="./public/nextjs.png" style="max-width: 140px" />
@@ -10,6 +12,9 @@
     <img src="./public/aws-appsync.png" style="max-width: 140px" />
     <img src="./public/graphql.png" style="max-width: 140px" />
 </div>
+
+</div>
+
 ## 📚 **Sobre**
 
  <p>Este projeto visa se aprofundar no desenvolvimento com a AWS aplicando o conjunto de ferramentas e serviços oferecido pelo AWS Amplify. </p>
